@@ -3,8 +3,8 @@
 > Copy this file to `FINDINGS.md` (or your own doc) and fill in one block per vulnerability you find.
 > Aim for enough detail that someone else could reproduce the issue from your write-up alone.
 
-**Tester:** _your name_
-**Date:** _yyyy-mm-dd_
+**Tester:** Joshua Vadala
+**Date:** 2026-06-27
 **Target:** JuiceBox @ http://localhost:3000 (local)
 
 ---
@@ -13,8 +13,8 @@
 
 | # | Title | Category | Severity | Status |
 |---|-------|----------|----------|--------|
-| 1 |       |          |          | Confirmed |
-| 2 |       |          |          |  |
+| 1 |       |          |     Low     | Confirmed |
+| 2 |       |          |          | In Progress |
 | 3 |       |          |          |  |
 
 *(Severity: Critical / High / Medium / Low / Info. Use the rubric at the bottom.)*
