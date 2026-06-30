@@ -13,7 +13,7 @@
 
 | # | Title | Category | Severity | Status |
 |---|-------|----------|----------|--------|
-| 1 |       |          |          | Confirmed |
+| 1 |   XSS Injection    |          |          | Confirmed |
 | 2 |       |          |          |  |
 | 3 |       |          |          |  |
 
