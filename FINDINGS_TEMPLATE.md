@@ -13,7 +13,7 @@
 
 | # | Title | Category | Severity | Status |
 |---|-------|----------|----------|--------|
-| 1 |   XSS Injection    |          |          | Confirmed |
+| 1 |   XSS Injection    |     A03:2021     |     Low     | Confirmed |
 | 2 |       |          |          |  |
 | 3 |       |          |          |  |
 
