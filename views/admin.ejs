@@ -17,7 +17,7 @@
     <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th></tr></thead>
     <tbody>
       <% products.forEach(function(p){ %>
-        <tr><td><%= p.id %></td><td><%= p.name %></td><td>$<%= p.price.toFixed(2) %></td><td><%= p.stock %></td></tr>
+        <tr><td><%= p.id %></td><td><%= p.name %></td><td>$<%= Number(p.price).toFixed(2) %></td><td><%= p.stock %></td></tr>
       <% }); %>
     </tbody>
   </table>

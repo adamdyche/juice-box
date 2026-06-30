@@ -32,7 +32,8 @@ function init() {
       description TEXT,
       price REAL,
       emoji TEXT,
-      stock INTEGER DEFAULT 100
+      stock INTEGER DEFAULT 100,
+      category TEXT DEFAULT 'Juice'
     );
 
     CREATE TABLE IF NOT EXISTS reviews (
@@ -92,15 +93,15 @@ function seed() {
   insertUser.run('carol', md5('letmein'), 'carol@example.com', 'customer', '9 Citrus Ct', '6011-0009-9013-9424', 1200);
 
   const insertProduct = db.prepare(
-    'INSERT INTO products (name, description, price, emoji, stock) VALUES (?, ?, ?, ?, ?)'
+    'INSERT INTO products (name, description, price, emoji, stock, category) VALUES (?, ?, ?, ?, ?, ?)'
   );
-  insertProduct.run('Apple Juice (1L)', 'Crisp, cold-pressed apple juice. A customer favorite.', 4.99, '🍎', 200);
-  insertProduct.run('Carrot Juice (1L)', 'Sweet, earthy, and loaded with vitamin A.', 5.49, '🥕', 150);
-  insertProduct.run('OWASP Cola', 'The official soft drink of broken access control.', 2.99, '🥤', 500);
-  insertProduct.run('Green Detox Smoothie', 'Kale, spinach, and a hint of regret.', 7.25, '🥬', 80);
-  insertProduct.run('Orange Juice (1L)', 'Freshly squeezed, no pulp.', 4.50, '🍊', 175);
-  insertProduct.run('Mango Lassi', 'Creamy mango yogurt drink.', 3.75, '🥭', 90);
-  insertProduct.run('Limited Edition Gold Juice', 'Edible 24k gold flakes. Status in a bottle.', 499.00, '🏆', 5);
+  insertProduct.run('Apple Juice (1L)', 'Crisp, cold-pressed apple juice. A customer favorite.', 4.99, '🍎', 200, 'Juice');
+  insertProduct.run('Carrot Juice (1L)', 'Sweet, earthy, and loaded with vitamin A.', 5.49, '🥕', 150, 'Juice');
+  insertProduct.run('OWASP Cola', 'The official soft drink of broken access control.', 2.99, '🥤', 500, 'Soda');
+  insertProduct.run('Green Detox Smoothie', 'Kale, spinach, and a hint of regret.', 7.25, '🥬', 80, 'Smoothie');
+  insertProduct.run('Orange Juice (1L)', 'Freshly squeezed, no pulp.', 4.50, '🍊', 175, 'Juice');
+  insertProduct.run('Mango Lassi', 'Creamy mango yogurt drink.', 3.75, '🥭', 90, 'Smoothie');
+  insertProduct.run('Limited Edition Gold Juice', 'Edible 24k gold flakes. Status in a bottle.', 499.00, '🏆', 5, 'Premium');
 
   const insertReview = db.prepare(
     'INSERT INTO reviews (product_id, author, body, rating) VALUES (?, ?, ?, ?)'

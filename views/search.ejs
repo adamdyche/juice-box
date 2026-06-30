@@ -1,6 +1,10 @@
 <%- include('partials/header') %>
-<!-- The raw, unescaped query is echoed straight into the page. -->
-<h2>Search results for: <%- q %></h2>
+<% if (category) { %>
+  <h2>Category: <%= category %></h2>
+<% } else { %>
+  <!-- The raw, unescaped query is echoed straight into the page. -->
+  <h2>Search results for: <%- q %></h2>
+<% } %>
 <% if (error) { %>
   <pre class="error"><%= error %></pre>
 <% } %>
@@ -14,7 +18,7 @@
       <h3><a href="/product/<%= p.id %>"><%= p.name %></a></h3>
       <p class="desc"><%= p.description %></p>
       <div class="row">
-        <span class="price">$<%= p.price.toFixed(2) %></span>
+        <span class="price">$<%= Number(p.price).toFixed(2) %></span>
         <form action="/cart/add" method="post">
           <input type="hidden" name="id" value="<%= p.id %>" />
           <button type="submit">Add to cart</button>

@@ -110,18 +110,26 @@ app.get('/', (req, res) => {
   res.render('index', { products });
 });
 
-// --- reflected XSS + (bonus) SQL injection in search ------------------------
+// --- search (reflected XSS) + category filter (SQL injection) ----------------
 app.get('/search', (req, res) => {
   const q = req.query.q || '';
+  const category = req.query.category;
   let products = [];
   let error = null;
   try {
-    // String-concatenated SQL straight from the query string.
-    products = db.prepare(`SELECT * FROM products WHERE name LIKE '%${q}%' OR description LIKE '%${q}%'`).all();
+    if (category !== undefined) {
+      // Category filter: value is concatenated straight into SQL (injectable).
+      products = db.prepare(`SELECT * FROM products WHERE category = '${category}'`).all();
+    } else {
+      // Name search: parameterized (safe). `q` is reflected in the view for XSS,
+      // but it does NOT touch the SQL, so XSS payloads don't break the query.
+      const like = `%${q}%`;
+      products = db.prepare('SELECT * FROM products WHERE name LIKE ? OR description LIKE ?').all(like, like);
+    }
   } catch (e) {
     error = e.message; // verbose error leaks SQL structure
   }
-  res.render('search', { q, products, error });
+  res.render('search', { q, category: category || null, products, error });
 });
 
 // --- product detail + reviews ----------------------------------------------

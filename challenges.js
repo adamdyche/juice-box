@@ -29,7 +29,7 @@ const CHALLENGES = [
   { id: 'sqli-union', cat: 'SQL Injection', diff: 'Medium', how: 'submit',
     title: 'SQLi UNION extraction',
     flag: 'FLAG{un10n_s3l3ct_l00t}',
-    hint: "A search talks to the database. Could you make it return rows from a table it was never meant to? A flag is hidden in one of them." },
+    hint: "Browsing and filtering the catalog runs database queries. Could you make one return rows from a table it was never meant to? A flag is hidden in one of them." },
   { id: 'sqli-blind', cat: 'SQL Injection', diff: 'Hard', how: 'submit',
     title: 'Blind (boolean) SQLi',
     flag: 'FLAG{bl1nd_but_n0t_d3af}',
