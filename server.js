@@ -12,6 +12,10 @@ const { CHALLENGES, BY_ID, TOTAL } = require('./challenges');
 
 const RECEIPTS_DIR = path.join(__dirname, 'receipts');
 
+// Recognizes an executable XSS payload (used to auto-detect XSS challenges).
+// These fields render attacker input raw, so a match means real script execution.
+const XSS_PAYLOAD = /<script|<svg|<img|<iframe|<body|<details|<video|<audio|on\w+\s*=|javascript:/i;
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434';
@@ -129,6 +133,8 @@ app.get('/search', (req, res) => {
   } catch (e) {
     error = e.message; // verbose error leaks SQL structure
   }
+  // Scoreboard: `q` is reflected raw, so an executable payload here is real XSS.
+  if (category === undefined && XSS_PAYLOAD.test(q)) solve(req, res, 'xss-reflected');
   res.render('search', { q, category: category || null, products, error });
 });
 
@@ -137,6 +143,9 @@ app.get('/product/:id', (req, res) => {
   const product = db.prepare('SELECT * FROM products WHERE id = ?').get(req.params.id);
   if (!product) return res.status(404).render('error', { message: 'Product not found' });
   const reviews = db.prepare('SELECT * FROM reviews WHERE product_id = ? ORDER BY id DESC').all(product.id);
+  // Scoreboard: a stored review is rendered raw, so a payload here that loads on
+  // this page is real stored XSS.
+  if (reviews.some((r) => XSS_PAYLOAD.test(r.body || ''))) solve(req, res, 'xss-stored');
   res.render('product', { product, reviews });
 });
 
@@ -501,9 +510,9 @@ app.post('/tools/ping', (req, res) => {
 });
 
 // --- scoreboard -------------------------------------------------------------
-// Beacon endpoint: an XSS payload proves code execution by calling
-// window.JuiceBox.solve('<id>') -> GET /api/collect/<id>. Returns a 1x1 GIF so
-// it works as an <img src>. Only the three XSS challenges are collectable here.
+// Collector used by the DOM-XSS page: the fragment never reaches the server, so
+// the /promo client script calls this when an executable payload is written into
+// innerHTML. Returns a 1x1 GIF so it also works as an <img src>.
 const PIXEL = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64');
 app.get('/api/collect/:id', (req, res) => {
   const allowed = ['xss-reflected', 'xss-stored', 'xss-dom'];

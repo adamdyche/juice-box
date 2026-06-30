@@ -1,22 +1,21 @@
 // challenges.js — the scoreboard definition.
 // `how`:
-//   auto   -> the server detects the exploit and marks it solved automatically.
-//   beacon -> prove JS execution by having your XSS payload call
-//             window.JuiceBox.solve('<id>') (i.e. GET /api/collect/<id>).
+//   auto   -> detected automatically when you land the exploit (server-side, or
+//             client-side for DOM XSS). No magic function to call.
 //   submit -> find a flag string by exploiting, then paste it on /scoreboard.
 //   crack  -> submit the cracked plaintext of the shown MD5 hash.
 
 const CHALLENGES = [
   // ---- XSS ---------------------------------------------------------------
-  { id: 'xss-reflected', cat: 'XSS', diff: 'Easy', how: 'beacon',
+  { id: 'xss-reflected', cat: 'XSS', diff: 'Easy', how: 'auto',
     title: 'Reflected XSS',
     flag: 'FLAG{r3fl3ct3d_and_p0pp3d}',
-    hint: "Some pages put your input straight back into the response. Find one where what you type is reflected without being escaped." },
-  { id: 'xss-stored', cat: 'XSS', diff: 'Medium', how: 'beacon',
+    hint: "Some pages put your input straight back into the response. Find one where what you type is reflected without being escaped, and land a script." },
+  { id: 'xss-stored', cat: 'XSS', diff: 'Medium', how: 'auto',
     title: 'Stored XSS',
     flag: 'FLAG{st0r3d_f0r_ev3ry0ne}',
     hint: "Some input you submit is shown back to other users later. What if it isn't sanitised when it's stored or displayed?" },
-  { id: 'xss-dom', cat: 'XSS', diff: 'Hard', how: 'beacon',
+  { id: 'xss-dom', cat: 'XSS', diff: 'Hard', how: 'auto',
     title: 'DOM-based XSS',
     flag: 'FLAG{d0m_s1nk_innerHTML}',
     hint: "Not all XSS involves the server. Watch what the client-side JavaScript does with parts of the URL." },

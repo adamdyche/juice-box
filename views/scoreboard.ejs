@@ -46,10 +46,6 @@
             <% if (c.how === 'crack' && c.crackHash) { %>
               <p class="hint">Hash to crack: <code><%= c.crackHash %></code></p>
             <% } %>
-            <% if (c.how === 'beacon') { %>
-              <p class="hint">Prove it by making the page run:
-                <code>JuiceBox.solve('<%= c.id %>')</code></p>
-            <% } %>
             <% if (c.how === 'submit') { %>
               <p class="hint">Exploit it to find a <code>FLAG{...}</code>, then submit it above.</p>
             <% } %>

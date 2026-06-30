@@ -13,5 +13,10 @@
   // The server never sees the payload (everything after # stays in the browser).
   var msg = decodeURIComponent((location.hash || '#Share JuiceBox with friends!').slice(1));
   document.getElementById('ref-banner').innerHTML = msg;
+  // Scoreboard: the server never sees the fragment, so detection happens here.
+  // An executable payload written into innerHTML is real DOM XSS.
+  if (/<script|<svg|<img|<iframe|<video|<audio|on\w+\s*=|javascript:/i.test(msg)) {
+    fetch('/api/collect/xss-dom');
+  }
 </script>
 <%- include('partials/footer') %>
