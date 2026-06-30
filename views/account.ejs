@@ -18,6 +18,29 @@
     <button type="submit">Save changes</button>
   </form>
 
+  <h2>Profile picture</h2>
+  <p class="muted">Import an avatar from a URL — we'll fetch it to check it's a valid image.</p>
+  <form id="avatar-form" class="reviewform">
+    <input type="text" id="avatar-url" name="url" placeholder="https://example.com/me.png" />
+    <button type="submit">Import avatar</button>
+    <pre id="avatar-result"></pre>
+  </form>
+  <script>
+    document.getElementById('avatar-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const out = document.getElementById('avatar-result');
+      out.textContent = 'Fetching...';
+      try {
+        const r = await fetch('/account/avatar', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: document.getElementById('avatar-url').value }),
+        });
+        out.textContent = await r.text();
+      } catch (err) { out.textContent = err.message; }
+    });
+  </script>
+
   <h2>Order history</h2>
   <% if (orders.length === 0) { %><p>No orders yet.</p><% } %>
   <table class="orders">
@@ -29,7 +52,7 @@
           <td>$<%= Number(o.total).toFixed(2) %></td>
           <td><%= o.status %></td>
           <td><%= o.created_at %></td>
-          <td><a href="/order/<%= o.id %>">View</a></td>
+          <td><a href="/order/<%= o.id %>">View</a> &middot; <a href="/download?file=receipt-<%= o.id %>.txt">Receipt</a></td>
         </tr>
       <% }); %>
     </tbody>

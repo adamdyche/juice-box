@@ -1,0 +1,6 @@
+JuiceBox — Receipt
+==================
+Order #1
+Thank you for your purchase!
+
+This is a sample receipt file.

@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+<section class="auth" style="max-width:560px">
+  <h1>🎁 Gift card message</h1>
+  <p class="muted">Write a message for your gift card and preview how it'll look.</p>
+  <form action="/gift/preview" method="post" class="reviewform">
+    <textarea name="message" rows="3" placeholder="Happy birthday! Enjoy some juice on me."><%= message %></textarea>
+    <button type="submit">Preview</button>
+  </form>
+  <% if (error) { %><pre class="error"><%= error %></pre><% } %>
+  <% if (preview !== null) { %>
+    <h3>Preview</h3>
+    <div class="review-body" style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:1rem"><%- preview %></div>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

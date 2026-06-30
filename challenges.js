@@ -94,6 +94,28 @@ const CHALLENGES = [
     flag: 'FLAG{pr0mpt_1nj3ct10n_l34k}',
     hint: 'JuiceBot has a secret in its system prompt. Talk it into revealing the flag, then submit it.' },
 
+  // ---- Path traversal ----------------------------------------------------
+  { id: 'path-traversal', cat: 'Path Traversal', diff: 'Medium', how: 'auto',
+    title: 'Directory traversal',
+    flag: 'FLAG{d0t_d0t_sl4sh_3sc4p3}',
+    hint: 'A file download takes a filename parameter. Use ../ sequences to climb out of its folder and read a file outside it (e.g. /etc/passwd or the source).' },
+
+  // ---- SSRF --------------------------------------------------------------
+  { id: 'ssrf', cat: 'SSRF', diff: 'Medium', how: 'auto',
+    title: 'Server-Side Request Forgery',
+    flag: 'FLAG{s3rv3r_f3tch3d_1t}',
+    hint: 'A feature fetches a URL you supply, server-side. Point it at an internal-only address the server can reach but you normally cannot.' },
+
+  // ---- Server-side injection (RCE-class) ---------------------------------
+  { id: 'ssti', cat: 'Server-Side Injection', diff: 'Hard', how: 'auto',
+    title: 'Template injection (SSTI)',
+    flag: 'FLAG{ej5_t3mpl4t3_pwn3d}',
+    hint: 'A text field is rendered through the templating engine. Inject template syntax that gets evaluated (a math expression is a good probe), then escalate.' },
+  { id: 'cmd-injection', cat: 'Server-Side Injection', diff: 'Hard', how: 'auto',
+    title: 'OS command injection',
+    flag: 'FLAG{sh3ll_0ut_0f_b0unds}',
+    hint: 'A diagnostic tool runs a shell command using your input. Chain an extra command with a shell metacharacter.' },
+
   // ---- Bonus -------------------------------------------------------------
   { id: 'open-redirect', cat: 'Bonus', diff: 'Bonus', how: 'auto',
     title: 'Open redirect',

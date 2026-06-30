@@ -4,8 +4,13 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const crypto = require('crypto');
 const path = require('path');
+const fs = require('fs');
+const { exec } = require('child_process');
+const ejs = require('ejs');
 const { db, md5 } = require('./db');
 const { CHALLENGES, BY_ID, TOTAL } = require('./challenges');
+
+const RECEIPTS_DIR = path.join(__dirname, 'receipts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -414,6 +419,78 @@ function cannedAssistant(message) {
   if (m.includes('cheap') || m.includes('budget')) return 'OWASP Cola is our best value at $2.99!';
   return "Hi! I'm JuiceBot. Ask me about our juices, smoothies, and sodas.";
 }
+
+// --- path traversal: receipt download ---------------------------------------
+// The filename is joined onto the receipts dir with no sanitization, so `../`
+// sequences escape it and read arbitrary files.
+app.get('/download', (req, res) => {
+  const file = req.query.file || '';
+  const target = path.join(RECEIPTS_DIR, file);
+  const resolved = path.resolve(target);
+  // Scoreboard: the resolved path escaped the receipts directory.
+  if (!resolved.startsWith(path.resolve(RECEIPTS_DIR) + path.sep)) solve(req, res, 'path-traversal');
+  try {
+    const data = fs.readFileSync(target);
+    res.type('text/plain').send(data);
+  } catch (e) {
+    res.status(404).type('text/plain').send('Cannot read file: ' + e.message);
+  }
+});
+
+// --- SSRF: import avatar from a URL ------------------------------------------
+// The server fetches whatever URL you give it "to validate the image",
+// happily reaching internal-only addresses and returning the response.
+function isInternalHost(host) {
+  return /^(localhost|127\.|0\.0\.0\.0|10\.|192\.168\.|169\.254\.|::1|\[::1\])/i.test(host) ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(host) ||
+    /metadata|internal/i.test(host);
+}
+app.post('/account/avatar', async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: 'login required' });
+  const url = (req.body.url || '').toString();
+  let host = '';
+  try { host = new URL(url).hostname; } catch (e) { return res.status(400).json({ error: 'bad url' }); }
+  if (isInternalHost(host)) solve(req, res, 'ssrf'); // scoreboard: reached an internal address
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(5000) });
+    const body = (await r.text()).slice(0, 2000);
+    res.json({ ok: true, status: r.status, contentType: r.headers.get('content-type'), body });
+  } catch (e) {
+    res.status(502).json({ error: 'fetch failed: ' + e.message });
+  }
+});
+
+// --- SSTI: gift-card message preview ----------------------------------------
+// The message is rendered straight through the EJS engine, so template syntax
+// in user input is evaluated server-side.
+app.get('/gift', (req, res) => {
+  res.render('gift', { preview: null, error: null, message: '' });
+});
+app.post('/gift/preview', (req, res) => {
+  const message = (req.body.message || '').toString();
+  let preview = null;
+  let error = null;
+  try {
+    preview = ejs.render(message, { store: 'JuiceBox' }); // user input AS a template
+    if (/<%/.test(message) && preview !== message) solve(req, res, 'ssti');
+  } catch (e) {
+    error = e.message;
+  }
+  res.render('gift', { preview, error, message });
+});
+
+// --- command injection: store status / ping tool ----------------------------
+// The host is interpolated into a shell command with no escaping.
+app.get('/tools', (req, res) => {
+  res.render('tools', { output: null, host: '' });
+});
+app.post('/tools/ping', (req, res) => {
+  const host = (req.body.host || '').toString();
+  if (/[;&|`$(<>]/.test(host)) solve(req, res, 'cmd-injection'); // shell metacharacters
+  exec(`ping -c 1 -t 2 ${host}`, { timeout: 6000, maxBuffer: 1024 * 64 }, (err, stdout, stderr) => {
+    res.render('tools', { output: (stdout || '') + (stderr || '') || (err && err.message) || '(no output)', host });
+  });
+});
 
 // --- scoreboard -------------------------------------------------------------
 // Beacon endpoint: an XSS payload proves code execution by calling

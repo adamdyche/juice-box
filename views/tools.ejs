@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<section class="auth" style="max-width:560px">
+  <h1>🛠️ Service status</h1>
+  <p class="muted">Check whether a host is reachable from our servers.</p>
+  <form action="/tools/ping" method="post" class="reviewform">
+    <input type="text" name="host" placeholder="e.g. 127.0.0.1" value="<%= host %>" />
+    <button type="submit">Ping</button>
+  </form>
+  <% if (output !== null) { %>
+    <h3>Result</h3>
+    <pre class="review-body" style="background:#0f172a;color:#bbf7d0;padding:1rem;border-radius:10px;white-space:pre-wrap"><%= output %></pre>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

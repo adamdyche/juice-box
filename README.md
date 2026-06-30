@@ -49,12 +49,13 @@ The store has an `admin` account and several customers (`alice`, `bob`, `carol`)
 
 This app is planted with vulnerabilities across the **OWASP Top 10**. Your job is to find them. The broad categories in play:
 
-- Injection (SQL, and others)
+- Injection (SQL, command, template, …)
 - Cross-Site Scripting (XSS)
 - Broken Access Control / IDOR
 - Business-logic flaws
 - Authentication & session weaknesses
 - Sensitive data exposure & security misconfiguration
+- Server-side request forgery (SSRF) and path traversal
 - An LLM-specific weakness in the chatbot
 - A few smaller bonus issues
 
@@ -63,6 +64,8 @@ Most categories have **more than one bug**, at a range of difficulty — some ar
 If you're working through **PortSwigger Web Security Academy**, you'll recognize a lot of these — start with the simplest version of each class and work up.
 
 For each finding, capture: **where** it is, a **proof-of-concept** (request/payload), the **impact**, and a **remediation**.
+
+**Start here:** read **[BRIEF.md](BRIEF.md)** for the rules of engagement, a setup checklist, and how to work. Record what you find using **[FINDINGS_TEMPLATE.md](FINDINGS_TEMPLATE.md)**.
 
 > 💡 Treat the whole site as in-scope: every page, every form, every API endpoint, and every cookie. Use your browser's dev tools and an intercepting proxy (Burp / ZAP / mitmproxy) — much of what's interesting never shows up in the rendered page.
 
