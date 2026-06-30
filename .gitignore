@@ -1,0 +1,9 @@
+# Mentor answer key — must never be committed.
+SOLUTIONS.md
+
+node_modules/
+juicebox.db
+juicebox.db-shm
+juicebox.db-wal
+*.log
+.DS_Store

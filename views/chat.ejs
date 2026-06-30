@@ -1,0 +1,45 @@
+<%- include('partials/header') %>
+<section class="chat">
+  <h1>💬 JuiceBot — AI Shopping Assistant</h1>
+  <p class="muted">Ask me about our juices! (Powered by a local Ollama model when available.)</p>
+  <div id="log" class="chat-log"></div>
+  <form id="chat-form" class="chat-form">
+    <input type="text" id="msg" placeholder="What's your cheapest drink?" autocomplete="off" autofocus />
+    <button type="submit">Send</button>
+  </form>
+</section>
+<script>
+  const log = document.getElementById('log');
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('msg');
+
+  function add(role, text) {
+    const div = document.createElement('div');
+    div.className = 'bubble ' + role;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+    add('user', message);
+    input.value = '';
+    add('bot', '...');
+    const thinking = log.lastChild;
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      const data = await r.json();
+      thinking.textContent = data.reply + (data.engine === 'fallback' ? '  [offline mode]' : '');
+    } catch (err) {
+      thinking.textContent = 'Error talking to JuiceBot.';
+    }
+  });
+</script>
+<%- include('partials/footer') %>

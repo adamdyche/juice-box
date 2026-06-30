@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+<section class="product-detail">
+  <div class="emoji big"><%= product.emoji %></div>
+  <div class="product-info">
+    <h1><%= product.name %></h1>
+    <p class="desc"><%= product.description %></p>
+    <p class="price">$<%= product.price.toFixed(2) %></p>
+    <p class="stock"><%= product.stock %> in stock</p>
+    <form action="/cart/add" method="post" class="addform">
+      <input type="hidden" name="id" value="<%= product.id %>" />
+      <input type="number" name="qty" value="1" min="1" />
+      <button type="submit">Add to cart</button>
+    </form>
+  </div>
+</section>
+
+<section class="reviews">
+  <h2>Reviews</h2>
+  <% if (reviews.length === 0) { %><p>No reviews yet.</p><% } %>
+  <% reviews.forEach(function(r){ %>
+    <div class="review">
+      <strong><%= r.author %></strong>
+      <span class="stars"><%= '★'.repeat(r.rating) %><%= '☆'.repeat(5 - r.rating) %></span>
+      <!-- Review body is rendered as raw HTML. -->
+      <div class="review-body"><%- r.body %></div>
+    </div>
+  <% }); %>
+
+  <h3>Leave a review</h3>
+  <form action="/product/<%= product.id %>/review" method="post" class="reviewform">
+    <% if (!user) { %><input type="text" name="author" placeholder="Your name" /><% } %>
+    <select name="rating">
+      <option value="5">★★★★★</option>
+      <option value="4">★★★★</option>
+      <option value="3">★★★</option>
+      <option value="2">★★</option>
+      <option value="1">★</option>
+    </select>
+    <textarea name="body" placeholder="Share your thoughts..." rows="3"></textarea>
+    <button type="submit">Post review</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

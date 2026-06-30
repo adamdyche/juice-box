@@ -1,0 +1,17 @@
+<%- include('partials/header') %>
+<section class="auth">
+  <h1>🎁 Refer a friend</h1>
+  <p>Share JuiceBox and you both get a discount. Personalize your referral message
+     by adding it after <code>#</code> in the link, then share the URL.</p>
+  <p class="muted">Example: <code>/promo#Hi%20Bob,%20try%20JuiceBox!</code></p>
+  <hr />
+  <h3>Your referral preview:</h3>
+  <div id="ref-banner" class="review-body"></div>
+</section>
+<script>
+  // DOM-based: the fragment is read on the client and written via innerHTML.
+  // The server never sees the payload (everything after # stays in the browser).
+  var msg = decodeURIComponent((location.hash || '#Share JuiceBox with friends!').slice(1));
+  document.getElementById('ref-banner').innerHTML = msg;
+</script>
+<%- include('partials/footer') %>

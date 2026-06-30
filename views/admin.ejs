@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+<section class="admin">
+  <h1>Admin Dashboard</h1>
+
+  <h2>Users</h2>
+  <table class="orders">
+    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Balance</th></tr></thead>
+    <tbody>
+      <% users.forEach(function(u){ %>
+        <tr><td><%= u.id %></td><td><%= u.username %></td><td><%= u.email %></td><td><%= u.role %></td><td>$<%= Number(u.balance).toFixed(2) %></td></tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <h2>Products</h2>
+  <table class="orders">
+    <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Stock</th></tr></thead>
+    <tbody>
+      <% products.forEach(function(p){ %>
+        <tr><td><%= p.id %></td><td><%= p.name %></td><td>$<%= p.price.toFixed(2) %></td><td><%= p.stock %></td></tr>
+      <% }); %>
+    </tbody>
+  </table>
+
+  <h2>All Orders</h2>
+  <table class="orders">
+    <thead><tr><th>#</th><th>User</th><th>Total</th><th>Coupon</th><th>Date</th></tr></thead>
+    <tbody>
+      <% orders.forEach(function(o){ %>
+        <tr><td>#<%= o.id %></td><td><%= o.user_id %></td><td>$<%= Number(o.total).toFixed(2) %></td><td><%= o.coupon || '-' %></td><td><%= o.created_at %></td></tr>
+      <% }); %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

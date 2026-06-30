@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+<section class="order-detail">
+  <h1>Order #<%= order.id %></h1>
+  <p><strong>Status:</strong> <%= order.status %> &middot; <strong>Placed:</strong> <%= order.created_at %></p>
+  <p><strong>Customer:</strong> <%= owner.username %> (<%= owner.email %>)</p>
+  <p><strong>Ship to:</strong> <%= owner.address %></p>
+  <% if (order.coupon) { %><p><strong>Coupon:</strong> <%= order.coupon %></p><% } %>
+  <table class="orders">
+    <thead><tr><th>Item</th><th>Price</th><th>Qty</th></tr></thead>
+    <tbody>
+      <% items.forEach(function(i){ %>
+        <tr><td><%= i.name %></td><td>$<%= Number(i.price).toFixed(2) %></td><td><%= i.qty %></td></tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <p class="total"><strong>Total: $<%= Number(order.total).toFixed(2) %></strong></p>
+  <p><a href="/account">&larr; Back to account</a></p>
+</section>
+<%- include('partials/footer') %>

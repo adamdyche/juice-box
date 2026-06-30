@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+<section class="account">
+  <h1>My Account</h1>
+  <div class="profile">
+    <p><strong>Username:</strong> <%= account.username %></p>
+    <p><strong>Email:</strong> <%= account.email %></p>
+    <p><strong>Role:</strong> <%= account.role %></p>
+    <p><strong>Address:</strong> <%= account.address %></p>
+    <p><strong>Card on file:</strong> <%= account.card %></p>
+    <p><strong>Store credit:</strong> $<%= Number(account.balance).toFixed(2) %></p>
+  </div>
+
+  <h2>Edit profile</h2>
+  <form action="/account/update" method="post" class="reviewform">
+    <label>Email <input type="email" name="email" value="<%= account.email %>" /></label>
+    <label>Address <input type="text" name="address" value="<%= account.address %>" /></label>
+    <label>Card <input type="text" name="card" value="<%= account.card %>" /></label>
+    <button type="submit">Save changes</button>
+  </form>
+
+  <h2>Order history</h2>
+  <% if (orders.length === 0) { %><p>No orders yet.</p><% } %>
+  <table class="orders">
+    <thead><tr><th>Order #</th><th>Total</th><th>Status</th><th>Date</th><th></th></tr></thead>
+    <tbody>
+      <% orders.forEach(function(o){ %>
+        <tr>
+          <td>#<%= o.id %></td>
+          <td>$<%= Number(o.total).toFixed(2) %></td>
+          <td><%= o.status %></td>
+          <td><%= o.created_at %></td>
+          <td><a href="/order/<%= o.id %>">View</a></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>

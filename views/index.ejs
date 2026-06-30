@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+<section class="hero">
+  <h1>Fresh juice, delivered cold. 🧃</h1>
+  <p>Browse the catalog and stock up. New customers get <strong>WELCOME10</strong> for 10% off.</p>
+</section>
+<section class="grid">
+  <% products.forEach(function(p){ %>
+    <article class="card">
+      <div class="emoji"><%= p.emoji %></div>
+      <h3><a href="/product/<%= p.id %>"><%= p.name %></a></h3>
+      <p class="desc"><%= p.description %></p>
+      <div class="row">
+        <span class="price">$<%= p.price.toFixed(2) %></span>
+        <form action="/cart/add" method="post">
+          <input type="hidden" name="id" value="<%= p.id %>" />
+          <button type="submit">Add to cart</button>
+        </form>
+      </div>
+    </article>
+  <% }); %>
+</section>
+<%- include('partials/footer') %>

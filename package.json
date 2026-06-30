@@ -1,0 +1,21 @@
+{
+  "name": "juicebox-store",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JuiceBox — a deliberately vulnerable demo store for hands-on security training. NOT for production.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node db.js --reseed",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2"
+  }
+}

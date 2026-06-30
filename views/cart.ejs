@@ -1,0 +1,37 @@
+<%- include('partials/header') %>
+<section class="cart">
+  <h1>Your Cart</h1>
+  <% if (cart.length === 0) { %>
+    <p>Your cart is empty. <a href="/">Go shopping</a>.</p>
+  <% } else { %>
+    <table class="orders" id="cart-table">
+      <thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+      <tbody>
+        <% cart.forEach(function(i){ %>
+          <tr>
+            <td><%= i.name %></td>
+            <td>$<%= Number(i.price).toFixed(2) %></td>
+            <td><%= i.qty %></td>
+            <td>$<%= (Number(i.price) * Number(i.qty)).toFixed(2) %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="checkout">
+      <label>Coupon <input type="text" id="coupon" placeholder="e.g. WELCOME10" /></label>
+      <button id="checkout-btn">Checkout</button>
+      <form action="/cart/clear" method="post" style="display:inline">
+        <button type="submit" class="ghost">Clear cart</button>
+      </form>
+      <pre id="checkout-result"></pre>
+    </div>
+
+    <!-- The full cart (including prices) is sent from the client at checkout. -->
+    <script>
+      window.__CART__ = <%- JSON.stringify(cart) %>;
+    </script>
+    <script src="/static/app.js"></script>
+  <% } %>
+</section>
+<%- include('partials/footer') %>

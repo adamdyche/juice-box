@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+<%
+  const solvedCount = challenges.filter(function(c){ return solved.has(c.id); }).length;
+  const pct = Math.round((solvedCount / total) * 100);
+  // group by category, preserving first-seen order
+  const groups = {};
+  challenges.forEach(function(c){ (groups[c.cat] = groups[c.cat] || []).push(c); });
+  const diffClass = { Easy: 'd-easy', Medium: 'd-med', Hard: 'd-hard', Bonus: 'd-bonus' };
+%>
+<section class="board">
+  <h1>🏁 Scoreboard</h1>
+  <p class="muted">Solve challenges by actually exploiting the app. Most are detected
+    automatically; a few ask you to submit a flag you find. Progress is saved to this
+    browser.</p>
+
+  <div class="progress">
+    <div class="progress-bar"><span style="width: <%= pct %>%"></span></div>
+    <strong><%= solvedCount %> / <%= total %> solved (<%= pct %>%)</strong>
+  </div>
+
+  <% if (message) { %><p class="flag-msg"><%= message %></p><% } %>
+
+  <div class="submit-box">
+    <form action="/scoreboard/submit" method="post">
+      <input type="text" name="flag" placeholder="Paste a flag, e.g. FLAG{...}" autocomplete="off" />
+      <button type="submit">Submit flag</button>
+    </form>
+    <form action="/scoreboard/reset" method="post" onsubmit="return confirm('Reset your progress for this browser?')">
+      <button type="submit" class="ghost">Reset my progress</button>
+    </form>
+  </div>
+
+  <% Object.keys(groups).forEach(function(cat){ %>
+    <h2><%= cat %></h2>
+    <div class="chal-grid">
+      <% groups[cat].forEach(function(c){ var done = solved.has(c.id); %>
+        <div class="chal <%= done ? 'done' : '' %>">
+          <div class="chal-head">
+            <span class="chk"><%= done ? '✅' : '⬜' %></span>
+            <span class="chal-title"><%= c.title %></span>
+            <span class="diff <%= diffClass[c.diff] %>"><%= c.diff %></span>
+          </div>
+          <details>
+            <summary>Hint</summary>
+            <p class="hint"><%= c.hint %></p>
+            <% if (c.how === 'crack' && c.crackHash) { %>
+              <p class="hint">Hash to crack: <code><%= c.crackHash %></code></p>
+            <% } %>
+            <% if (c.how === 'beacon') { %>
+              <p class="hint">Prove it by making the page run:
+                <code>JuiceBox.solve('<%= c.id %>')</code></p>
+            <% } %>
+            <% if (c.how === 'submit') { %>
+              <p class="hint">Exploit it to find a <code>FLAG{...}</code>, then submit it above.</p>
+            <% } %>
+          </details>
+          <% if (done) { %><p class="chal-flag"><code><%= c.flag %></code></p><% } %>
+        </div>
+      <% }); %>
+    </div>
+  <% }); %>
+
+  <% if (solvedCount === total) { %>
+    <p class="flag-msg">🎉 All challenges solved. Nice work — now write up the fixes!</p>
+  <% } %>
+</section>
+<%- include('partials/footer') %>
